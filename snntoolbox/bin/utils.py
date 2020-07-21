@@ -145,13 +145,13 @@ def run_pipeline(config, queue=None):
         results = run(spiking_model, **testset)
 
         # Clean up
-        spiking_model.end_sim()
+        #spiking_model.end_sim()
 
         # Add results to queue to be displayed in GUI.
         if queue:
             queue.put(results)
-
-    return results
+    spiking_model.end_sim()
+    return results, spiking_model
 
 
 def is_stop(queue):
