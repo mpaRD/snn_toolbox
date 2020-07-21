@@ -111,9 +111,10 @@ class ModelParser(AbstractModelParser):
     def parse_concatenate(self, layer, attributes):
         pass
 
+
 #TODO: skip_model_compile should default to False (True required to make realtaste work)
 #TODO: Add a config file parameter to enable/disable model compilation here.
-def load(path, filename, skip_model_compile=True **kwargs):
+def load(path, filename, skip_model_compile=True, **kwargs):
     """Load network from file.
 
     Parameters
@@ -124,7 +125,7 @@ def load(path, filename, skip_model_compile=True **kwargs):
 
     filename: str
         Name of file to load model from.
-    
+
     skip_model_compile: bool
         True to skip compiling the model. Useful when working with architectures
         which do not comprise a complete keras model, d.g. due to missing 
