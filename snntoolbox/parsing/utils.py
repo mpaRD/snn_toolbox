@@ -770,13 +770,23 @@ class AbstractModelParser:
 
         pass
 
-    def build_parsed_model(self):
+    #TODO: skip_model_compile should default to False (True required to make realtaste work)
+    #TODO: Add a config file parameter to enable/disable model compilation here.
+    def build_parsed_model(self, skip_model_compile=True):
         """Create a Keras model suitable for conversion to SNN.
 
         This method uses the specifications in `_layer_list` to build a
         Keras model. The resulting model contains all essential information
         about the original network, independently of the model library in which
         the original network was built (e.g. Caffe).
+
+        Parameters
+        ----------
+
+        skip_model_compile: bool
+            True to skip compiling the model. Useful when working with architectures
+            which do not comprise a complete keras model, d.g. due to missing 
+            input/output layers.
 
         Returns
         -------
@@ -814,8 +824,8 @@ class AbstractModelParser:
         # Optimizer and loss do not matter because we only do inference.
         top_k = lambda x, y: keras.metrics.top_k_categorical_accuracy(
             x, y, self.config.getint('simulation', 'top_k'))
-        self.parsed_model.compile('sgd', 'categorical_crossentropy',
-                                  ['accuracy', top_k])
+        if not skip_model_compile:
+            self.parsed_model.compile('sgd', 'categorical_crossentropy', ['accuracy', top_k])
         # Todo: Enable adding custom metric via self.input_model.metrics.
         self.parsed_model.summary()
         return self.parsed_model

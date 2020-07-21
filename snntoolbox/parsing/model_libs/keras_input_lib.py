@@ -111,8 +111,9 @@ class ModelParser(AbstractModelParser):
     def parse_concatenate(self, layer, attributes):
         pass
 
-
-def load(path, filename, **kwargs):
+#TODO: skip_model_compile should default to False (True required to make realtaste work)
+#TODO: Add a config file parameter to enable/disable model compilation here.
+def load(path, filename, skip_model_compile=True **kwargs):
     """Load network from file.
 
     Parameters
@@ -123,6 +124,11 @@ def load(path, filename, **kwargs):
 
     filename: str
         Name of file to load model from.
+    
+    skip_model_compile: bool
+        True to skip compiling the model. Useful when working with architectures
+        which do not comprise a complete keras model, d.g. due to missing 
+        input/output layers.
 
     Returns
     -------
@@ -150,8 +156,8 @@ def load(path, filename, **kwargs):
         # Could be specified by user, but since they are not really needed
         # at inference time, set them to the most common choice.
         # TODO: Proper reinstantiation should be doable since Keras2
-        model.compile('sgd', 'categorical_crossentropy',
-                      ['accuracy', metrics.top_k_categorical_accuracy])
+        if not skip_model_compile:
+            model.compile('sgd', 'categorical_crossentropy', ['accuracy', metrics.top_k_categorical_accuracy])
     else:
         filepath_custom_objects = kwargs.get('filepath_custom_objects', None)
         if filepath_custom_objects is not None:
@@ -166,8 +172,8 @@ def load(path, filename, **kwargs):
             print(e)
             print("Trying to load without '.h5' extension.")
             model = models.load_model(filepath, custom_dicts)
-        model.compile(model.optimizer, model.loss,
-                      ['accuracy', metrics.top_k_categorical_accuracy])
+        if not skip_model_compile:
+            model.compile(model.optimizer, model.loss, ['accuracy', metrics.top_k_categorical_accuracy])
 
     model.summary()
     return {'model': model, 'val_fn': model.evaluate}
