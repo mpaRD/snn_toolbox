@@ -19,7 +19,7 @@ from importlib import import_module
 from snntoolbox.parsing.model_libs.keras_input_lib import load
 
 
-def run_pipeline(config, queue=None):
+def run_pipeline(config, queue=None, board=None):
     """Convert an analog network to a spiking network and simulate it.
 
     Complete pipeline of
@@ -38,6 +38,9 @@ def run_pipeline(config, queue=None):
 
     queue: Optional[Queue.Queue]
         Results are added to the queue to be displayed in the GUI.
+
+    board: Graph
+        Optional instance of a board to compile the model with.
 
     Returns
     -------
@@ -124,7 +127,7 @@ def run_pipeline(config, queue=None):
                         config.get('paths', 'path_wd'),
                         config.get('paths', 'filename_parsed_model')))
 
-        spiking_model.build(parsed_model, **testset)
+        spiking_model.build(parsed_model, **testset, board=board)
 
         # Export network in a format specific to the simulator with which it
         # will be tested later.
@@ -150,7 +153,7 @@ def run_pipeline(config, queue=None):
         # Add results to queue to be displayed in GUI.
         if queue:
             queue.put(results)
-    spiking_model.end_sim()
+    #spiking_model.end_sim()
     return results, spiking_model
 
 

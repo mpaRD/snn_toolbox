@@ -439,7 +439,7 @@ class AbstractSNN:
         self.setup_layers(batch_shape)
 
         print("Compiling spiking model...\n")
-        self.compile()
+        self.compile(board=kwargs.get('board', None))
 
         # Compute number of operations of ANN.
         if self.fanout is None:

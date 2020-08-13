@@ -14,7 +14,7 @@ import argparse
 import os
 
 
-def main(filepath=None):
+def main(filepath=None, board=None):
     """Entry point for running the toolbox.
 
     Note
@@ -45,7 +45,7 @@ def main(filepath=None):
         config = update_setup(_filepath)
 
         if args.terminal:
-            run_pipeline(config)
+            run_pipeline(config, board=board)
         else:
             from snntoolbox.bin.gui import gui
             gui.main()
